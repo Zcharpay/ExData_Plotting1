@@ -1,0 +1,23 @@
+########## Script to create a histogram of Global Active Power (kW) for data
+########## on 1st and 2nd Feb 2007
+
+## Load dependencies
+library(lubridate)
+library(dplyr)
+
+## Read in data from txt file. The file is large, so only read in the required rows
+data_names <- read.table("household_power_consumption.txt", header=FALSE,nrows = 1, 
+                         stringsAsFactors = FALSE,sep=";")
+data_input <- read.table("household_power_consumption.txt", header=TRUE,skip = 66636,
+                         nrows = 2880,na.strings = "?", stringsAsFactors = FALSE,
+                         col.names = data_names,sep=";")
+
+## convert the date-time fields in the data from character type
+data_input <-  mutate(data_input,Date = dmy(Date))
+data_input <-  mutate(data_input,Time = hms(Time))
+
+## plot the histogram to PNG file
+png(filename="plot1.png",width=480, height=480)
+with(data_input, hist(Global_active_power, col="red",ylab = "Frequency", 
+                      xlab = "Global Active Power (kilowatts)",main = "Global Active Power"))
+dev.off()
