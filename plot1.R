@@ -3,7 +3,6 @@
 
 ## Load dependencies
 library(lubridate)
-library(dplyr)
 
 ## Read in data from txt file. The file is large, so only read in the required rows
 data_names <- read.table("household_power_consumption.txt", header=FALSE,nrows = 1, 
@@ -13,8 +12,7 @@ data_input <- read.table("household_power_consumption.txt", header=TRUE,skip = 6
                          col.names = data_names,sep=";")
 
 ## convert the date-time fields in the data from character type
-data_input <-  mutate(data_input,Date = dmy(Date))
-data_input <-  mutate(data_input,Time = hms(Time))
+data_input$datetime <- dmy_hms(with(data_input, paste(Date,Time)))
 
 ## plot the histogram to PNG file
 png(filename="plot1.png",width=480, height=480)
